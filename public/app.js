@@ -11,6 +11,7 @@ function toast(msg) {
   const t = $('toast'); t.textContent = msg; t.classList.add('on');
   clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2400);
 }
+const ICON = { Cleanse: 'C', Treat: 'T', Eyes: 'E', Moisturise: 'M', Protect: 'SPF' };
 const money = (n) => `$${n.toFixed(2)}`;
 
 // ---------- status ----------
@@ -82,7 +83,7 @@ async function analyze(dataUrl, sample = false) {
 // ---------- report ----------
 function renderReport() {
   const R = state.report;
-  $('photo').src = state.photo; $('mask').classList.remove('on');
+  $('photo').src = state.photo; $('hl').classList.remove('on');
   $('overall').textContent = R.overall;
   requestAnimationFrame(() => { $('ringFg').style.strokeDashoffset = 326.7 * (1 - R.overall / 100); });
   $('skinAge').textContent = R.skinAge ?? '–';
@@ -126,8 +127,35 @@ function renderReport() {
 function selectConcern(k) {
   const c = state.report.concerns.find((x) => x.key === k); if (!c) return;
   document.querySelectorAll('.concern').forEach((el) => el.classList.toggle('sel', el.dataset.k === k));
-  if (c.mask) { $('mask').src = c.mask; $('mask').classList.add('on'); }
+  if (c.mask) highlight(c.mask);
   $('photoCap').innerHTML = `<b>${c.label}: ${c.score}/100.</b> ${c.tip}`;
+}
+
+// Paint where the AI's mask overlay differs from the original photo.
+const imgCache = {};
+const prox = (u) => (u.startsWith('/') ? u : `/api/img?u=${encodeURIComponent(u)}`);
+function loadImg(u) {
+  if (!imgCache[u]) imgCache[u] = new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = prox(u); });
+  return imgCache[u];
+}
+async function highlight(maskUrl) {
+  const cv = $('hl'); const token = (highlight.t = (highlight.t || 0) + 1);
+  try {
+    const base = state.report.baseImage || state.photo;
+    const [a, b] = await Promise.all([loadImg(base), loadImg(maskUrl)]);
+    if (token !== highlight.t) return;
+    const w = 360, h = Math.round((w * b.naturalHeight) / b.naturalWidth);
+    const c1 = document.createElement('canvas'); c1.width = w; c1.height = h; const x1 = c1.getContext('2d'); x1.drawImage(a, 0, 0, w, h);
+    const c2 = document.createElement('canvas'); c2.width = w; c2.height = h; const x2 = c2.getContext('2d'); x2.drawImage(b, 0, 0, w, h);
+    const d1 = x1.getImageData(0, 0, w, h).data, d2 = x2.getImageData(0, 0, w, h).data;
+    cv.width = w; cv.height = h; const ctx = cv.getContext('2d'); const out = ctx.createImageData(w, h);
+    for (let i = 0; i < d1.length; i += 4) {
+      const diff = Math.abs(d1[i] - d2[i]) + Math.abs(d1[i + 1] - d2[i + 1]) + Math.abs(d1[i + 2] - d2[i + 2]);
+      const t = Math.min(1, Math.max(0, (diff - 14) / 50));
+      out.data[i] = 255; out.data[i + 1] = 40; out.data[i + 2] = 120; out.data[i + 3] = Math.round(t * 210);
+    }
+    ctx.putImageData(out, 0, 0); cv.classList.add('on');
+  } catch (e) { cv.classList.remove('on'); }
 }
 
 // ---------- products / cart ----------
@@ -136,7 +164,7 @@ const allProducts = () => {
   return [...R.routine, R.foundation.best, ...R.lips];
 };
 function productCard(p) {
-  return `<div class="card"><div class="em">${p.emoji || '🧴'}</div><span class="step-l">${p.step}</span><h4>${p.name}</h4><p>${p.desc || ''}</p>
+  return `<div class="card"><div class="em ic ic-${p.step}">${ICON[p.step] || '•'}</div><span class="step-l">${p.step}</span><h4>${p.name}</h4><p>${p.desc || ''}</p>
     <span class="why">${p.why}</span><div class="row"><span class="price">${money(p.price)}</span>${addBtn(p)}</div></div>`;
 }
 function addBtn(p) {
@@ -151,7 +179,7 @@ function toggleCart(id) {
   if (i >= 0) { state.cart.splice(i, 1); }
   else {
     const p = allProducts().find((x) => x.id === id); if (!p) return;
-    state.cart.push({ id: p.id, name: p.name, price: p.price, emoji: p.emoji || '🧴', step: p.step, shade: p.shade || null });
+    state.cart.push({ id: p.id, name: p.name, price: p.price, step: p.step, shade: p.shade || null });
     toast(`Added ${p.name}`);
   }
   saveCart();
@@ -164,7 +192,7 @@ function saveCart() {
 }
 function renderCart() {
   const items = state.cart;
-  $('cartItems').innerHTML = items.length ? items.map((c) => `<div class="ci"><div class="em" ${c.shade ? `style="background:${c.shade}"` : ''}>${c.shade ? '' : c.emoji}</div><div class="n">${c.name}<small>${c.step}</small></div><b>${money(c.price)}</b><button data-rm="${c.id}">✕</button></div>`).join('') : '<p class="empty">Your cart is empty.</p>';
+  $('cartItems').innerHTML = items.length ? items.map((c) => `<div class="ci"><div class="em ${c.shade ? '' : 'ic ic-' + c.step}" ${c.shade ? `style="background:${c.shade}"` : ''}>${c.shade ? '' : (ICON[c.step] || '')}</div><div class="n">${c.name}<small>${c.step}</small></div><b>${money(c.price)}</b><button data-rm="${c.id}">✕</button></div>`).join('') : '<p class="empty">Your cart is empty.</p>';
   document.querySelectorAll('[data-rm]').forEach((b) => b.onclick = () => toggleCart(b.dataset.rm));
   const sub = items.reduce((s, c) => s + c.price, 0);
   const save = items.length >= 3 ? sub * 0.1 : 0;
@@ -172,7 +200,7 @@ function renderCart() {
   $('checkout').disabled = !items.length;
 }
 $('addRoutine').onclick = () => {
-  state.report.routine.forEach((p) => { if (!state.cart.some((c) => c.id === p.id)) state.cart.push({ id: p.id, name: p.name, price: p.price, emoji: p.emoji, step: p.step }); });
+  state.report.routine.forEach((p) => { if (!state.cart.some((c) => c.id === p.id)) state.cart.push({ id: p.id, name: p.name, price: p.price, step: p.step }); });
   saveCart(); toast('Full routine added'); openCart();
 };
 const openCart = () => { $('drawer').classList.add('open'); $('scrim').classList.add('on'); };

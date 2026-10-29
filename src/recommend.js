@@ -15,22 +15,22 @@ const CONCERNS = {
   radiance: { label: 'Radiance', tip: 'Vitamin C restores glow to dull skin.' },
 };
 
-const P = (id, name, step, price, targets, desc, emoji) => ({ id, name, step, price, targets, desc, emoji });
+const P = (id, name, step, price, targets, desc) => ({ id, name, step, price, targets, desc });
 
 const SKINCARE = [
-  P('cl-gel', 'Clarifying Gel Cleanser', 'Cleanse', 14, ['acne', 'oiliness', 'pore'], 'Low-pH gel with 0.5% salicylic acid.', '🫧'),
-  P('cl-cream', 'Ceramide Cream Cleanser', 'Cleanse', 14, ['moisture', 'redness'], 'Non-foaming, keeps the barrier intact.', '🧴'),
-  P('se-bha', '2% BHA Pore Serum', 'Treat', 22, ['acne', 'pore'], 'Salicylic acid + zinc for clear pores.', '💧'),
-  P('se-nia', '10% Niacinamide Serum', 'Treat', 18, ['pore', 'oiliness', 'texture'], 'Balances oil, refines pores.', '💧'),
-  P('se-vitc', '15% Vitamin C Serum', 'Treat', 28, ['age_spot', 'radiance', 'dark_circle_v2'], 'Brightens and evens tone.', '🍊'),
-  P('se-ret', 'Gentle Retinal Night Serum', 'Treat', 32, ['wrinkle', 'texture'], '0.05% retinal, encapsulated for comfort.', '🌙'),
-  P('se-cica', 'Cica Calming Serum', 'Treat', 24, ['redness'], 'Centella + 10% azelaic acid.', '🌿'),
-  P('se-ha', 'Hyaluronic Hydra Serum', 'Treat', 20, ['moisture'], 'Multi-weight hyaluronic acid.', '💦'),
-  P('ex-lac', 'Lactic Acid Smoothing Toner', 'Treat', 19, ['texture', 'radiance'], '5% lactic acid, 2-3 nights a week.', '✨'),
-  P('ey-caf', 'Caffeine Bright Eye Cream', 'Eyes', 21, ['dark_circle_v2'], 'Caffeine + peptides de-puff.', '👁️'),
-  P('mo-gel', 'Oil-Free Water Gel', 'Moisturise', 22, ['oiliness', 'acne'], 'Weightless hydration, matte finish.', '🫙'),
-  P('mo-cer', 'Barrier Repair Cream', 'Moisturise', 24, ['moisture', 'redness', 'wrinkle'], 'Ceramides + squalane.', '🫙'),
-  P('spf', 'Invisible Fluid SPF 50', 'Protect', 20, ['age_spot', 'wrinkle', 'redness'], 'No white cast on any skin tone.', '☀️'),
+  P('cl-gel', 'Clarifying Gel Cleanser', 'Cleanse', 14, ['acne', 'oiliness', 'pore'], 'Low-pH gel with 0.5% salicylic acid.'),
+  P('cl-cream', 'Ceramide Cream Cleanser', 'Cleanse', 14, ['moisture', 'redness'], 'Non-foaming, keeps the barrier intact.'),
+  P('se-bha', '2% BHA Pore Serum', 'Treat', 22, ['acne', 'pore'], 'Salicylic acid + zinc for clear pores.'),
+  P('se-nia', '10% Niacinamide Serum', 'Treat', 18, ['pore', 'oiliness', 'texture'], 'Balances oil, refines pores.'),
+  P('se-vitc', '15% Vitamin C Serum', 'Treat', 28, ['age_spot', 'radiance', 'dark_circle_v2'], 'Brightens and evens tone.'),
+  P('se-ret', 'Gentle Retinal Night Serum', 'Treat', 32, ['wrinkle', 'texture'], '0.05% retinal, encapsulated for comfort.'),
+  P('se-cica', 'Cica Calming Serum', 'Treat', 24, ['redness'], 'Centella + 10% azelaic acid.'),
+  P('se-ha', 'Hyaluronic Hydra Serum', 'Treat', 20, ['moisture'], 'Multi-weight hyaluronic acid.'),
+  P('ex-lac', 'Lactic Acid Smoothing Toner', 'Treat', 19, ['texture', 'radiance'], '5% lactic acid, 2-3 nights a week.'),
+  P('ey-caf', 'Caffeine Bright Eye Cream', 'Eyes', 21, ['dark_circle_v2'], 'Caffeine + peptides de-puff.'),
+  P('mo-gel', 'Oil-Free Water Gel', 'Moisturise', 22, ['oiliness', 'acne'], 'Weightless hydration, matte finish.'),
+  P('mo-cer', 'Barrier Repair Cream', 'Moisturise', 24, ['moisture', 'redness', 'wrinkle'], 'Ceramides + squalane.'),
+  P('spf', 'Invisible Fluid SPF 50', 'Protect', 20, ['age_spot', 'wrinkle', 'redness'], 'No white cast on any skin tone.'),
 ];
 
 // 16 foundation shades spanning very fair to deep (hex = shade swatch).
@@ -39,7 +39,7 @@ const FOUNDATION = [
   ['F5', 'Beige', '#D4A989'], ['F6', 'Honey', '#C99B78'], ['F7', 'Golden', '#C0906C'], ['F8', 'Caramel', '#B3825F'],
   ['F9', 'Tan', '#A87654'], ['F10', 'Amber', '#9A6847'], ['F11', 'Chestnut', '#8C5B3D'], ['F12', 'Cocoa', '#7A4C32'],
   ['F13', 'Mocha', '#6A3F29'], ['F14', 'Espresso', '#5A3422'], ['F15', 'Ebony', '#4A2A1C'], ['F16', 'Onyx', '#3B2117'],
-].map(([id, name, hex]) => ({ id: `fd-${id}`, name: `Skin Tint ${id} ${name}`, shade: hex, price: 26, step: 'Base', emoji: '🎨' }));
+].map(([id, name, hex]) => ({ id: `fd-${id}`, name: `Skin Tint ${id} ${name}`, shade: hex, price: 26, step: 'Base' }));
 
 const LIPS = {
   warm: [['Terracotta', '#B5523B'], ['Brick Red', '#A23A2E'], ['Peach Nude', '#C98A6B'], ['Spiced Coral', '#D0644E']],
@@ -144,9 +144,11 @@ function buildReport(skinOutput, tone) {
   routine.push(SKINCARE.find((p) => p.id === 'spf'));
 
   const foundation = matchFoundation(skinHex);
-  const lips = LIPS[ut].map(([name, hex], i) => ({ id: `lp-${ut}-${i}`, name: `Satin Lip ${name}`, shade: hex, price: 16, step: 'Lips', emoji: '💄' }));
+  const lips = LIPS[ut].map(([name, hex], i) => ({ id: `lp-${ut}-${i}`, name: `Satin Lip ${name}`, shade: hex, price: 16, step: 'Lips' }));
 
+  const baseImage = byType.resize_image?.mask_urls?.[0] || null;
   return {
+    baseImage,
     overall: Math.round(overall),
     skinAge,
     concerns,

@@ -57,6 +57,19 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
+// Same-origin image proxy so the browser can compare mask overlays pixel by pixel.
+app.get('/api/img', async (req, res) => {
+  try {
+    const u = new URL(String(req.query.u || ''));
+    if (u.protocol !== 'https:' || !/(\.amazonaws\.com|\.makeupar\.com|\.perfectcorp\.com)$/.test(u.hostname)) return res.status(400).end();
+    const r = await fetch(u);
+    if (!r.ok) return res.status(502).end();
+    res.set('Content-Type', r.headers.get('content-type') || 'image/jpeg');
+    res.set('Cache-Control', 'private, max-age=3600');
+    res.send(Buffer.from(await r.arrayBuffer()));
+  } catch { res.status(400).end(); }
+});
+
 // POST /api/tryon { sessionId, productId }
 app.post('/api/tryon', async (req, res) => {
   try {
