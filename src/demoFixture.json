@@ -1,0 +1,129 @@
+{
+ "skin": [
+  {
+   "ui_score": 98,
+   "mask_urls": [
+    "/demo/mask_oiliness.jpg"
+   ],
+   "raw_score": 99.51248931884766,
+   "type": "oiliness",
+   "url": null
+  },
+  {
+   "ui_score": 97,
+   "mask_urls": [
+    "/demo/mask_pore.jpg"
+   ],
+   "raw_score": 98.70174908638,
+   "type": "pore",
+   "url": null
+  },
+  {
+   "ui_score": 98,
+   "mask_urls": [
+    "/demo/mask_texture.jpg"
+   ],
+   "raw_score": 99.40815567970276,
+   "type": "texture",
+   "url": null
+  },
+  {
+   "ui_score": 94,
+   "mask_urls": [
+    "/demo/mask_redness.jpg"
+   ],
+   "raw_score": 96.19779968261719,
+   "type": "redness",
+   "url": null
+  },
+  {
+   "ui_score": 78,
+   "mask_urls": [
+    "/demo/mask_dark_circle_v2.jpg"
+   ],
+   "raw_score": 83.44922363758087,
+   "type": "dark_circle_v2",
+   "url": null
+  },
+  {
+   "ui_score": 97,
+   "mask_urls": [
+    "/demo/mask_age_spot.jpg"
+   ],
+   "raw_score": 98.73775482177734,
+   "type": "age_spot",
+   "url": null
+  },
+  {
+   "ui_score": 94,
+   "mask_urls": [
+    "/demo/mask_radiance.jpg"
+   ],
+   "raw_score": 96.21443748474121,
+   "type": "radiance",
+   "url": null
+  },
+  {
+   "ui_score": 96,
+   "mask_urls": [
+    "/demo/mask_acne.jpg"
+   ],
+   "raw_score": 97.86391,
+   "type": "acne",
+   "url": null
+  },
+  {
+   "ui_score": 96,
+   "mask_urls": [
+    "/demo/mask_wrinkle.jpg"
+   ],
+   "raw_score": 98.19283485412598,
+   "type": "wrinkle",
+   "url": null
+  },
+  {
+   "ui_score": 82,
+   "mask_urls": [
+    "/demo/mask_moisture.jpg"
+   ],
+   "raw_score": 80.68554401397705,
+   "type": "moisture",
+   "url": null
+  },
+  {
+   "score": 93.0,
+   "type": "all",
+   "url": null
+  },
+  {
+   "score": 28,
+   "type": "skin_age",
+   "url": null
+  },
+  {
+   "mask_urls": [
+    "/demo/selfie.jpg"
+   ],
+   "type": "resize_image",
+   "url": null
+  }
+ ],
+ "tone": {
+  "color": {
+   "eye_color": "#342724",
+   "eye_color_name": "Brown",
+   "lip_color": "#be8782",
+   "eyebrow_color": "#805d47",
+   "skin_color": "#bc9d88",
+   "hair_color": "#B56637",
+   "hair_color_name": "Auburn"
+  },
+  "face_quality": {
+   "has_face": true,
+   "area": "good",
+   "frontal": "good",
+   "lighting": "good",
+   "faceangle": "good"
+  }
+ }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "skincart",
+  "version": "1.0.0",
+  "description": "SkinCart - one selfie to a personalised skincare routine, foundation shade match and virtual lip try-on, powered by the YouCam API.",
+  "main": "server.js",
+  "license": "MIT",
+  "author": "Raja Hassaan",
+  "engines": { "node": ">=18" },
+  "scripts": { "start": "node server.js", "test": "node test/unit.js" },
+  "dependencies": { "dotenv": "^16.4.5", "express": "^4.21.2" }
+}

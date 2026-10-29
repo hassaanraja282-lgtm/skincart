@@ -1,0 +1,14 @@
+const assert = require('assert');
+const { buildReport, undertone, matchFoundation, effectsFor, findProduct } = require('../src/recommend');
+const demo = require('../src/demoFixture.json');
+const r = buildReport(demo.skin, demo.tone);
+assert(r.overall > 0 && r.overall <= 100);
+assert(r.concerns.length === 10);
+assert(r.routine.length >= 3);
+assert(r.routine.some((p) => p.id === 'spf'));
+assert(['warm', 'cool', 'neutral'].includes(undertone('#bc9d88')));
+assert(matchFoundation('#3B2117').best.id === 'fd-F16');
+assert(matchFoundation('#F3D9C6').best.id === 'fd-F1');
+assert(effectsFor(r.lips[0])[0].category === 'lip_color');
+assert(findProduct(r.lips[0].id));
+console.log('unit ok', { overall: r.overall, skinAge: r.skinAge, tone: r.tone, routine: r.routine.map((p) => p.name), shade: r.foundation.best.name, match: r.foundation.best.match });

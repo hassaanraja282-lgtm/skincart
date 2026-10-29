@@ -1,0 +1,15 @@
+# Render Blueprint - one-click deploy. Without YOUCAM_API_KEY the app runs in demo mode.
+services:
+  - type: web
+    name: skincart
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: YOUCAM_API_KEY
+        sync: false

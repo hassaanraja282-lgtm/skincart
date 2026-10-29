@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SkinCart · Selfie to your perfect routine</title>
+<meta name="description" content="Take a selfie. YouCam AI reads your skin and tone, builds a routine, matches your shade and lets you try it on before you buy." />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">◐</span> SkinCart</div>
+  <div class="mode" id="mode"></div>
+  <button class="cart-btn" id="cartBtn" aria-label="Open cart">🛍️ <span id="cartCount">0</span></button>
+</header>
+
+<main>
+  <!-- STEP 1: selfie -->
+  <section id="step-selfie" class="step active">
+    <div class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">AI skin analysis · shade match · virtual try-on</p>
+        <h1>One selfie.<br/>Your whole routine.</h1>
+        <p class="lead">SkinCart reads 10 skin concerns and your exact skin tone with the YouCam API, builds a routine for <em>your</em> skin, matches your foundation shade and lets you try lip colours on before you buy.</p>
+        <div class="actions">
+          <button class="btn primary" id="camBtn">📷 Take a selfie</button>
+          <label class="btn ghost">⬆️ Upload photo<input type="file" id="fileIn" accept="image/jpeg,image/png" hidden /></label>
+          <button class="btn link" id="sampleBtn">Try with a sample face</button>
+        </div>
+        <p class="fine">Tips: face the camera, natural light, no filters, hair off your face.</p>
+      </div>
+      <div class="hero-cam">
+        <video id="video" playsinline muted></video>
+        <canvas id="canvas" hidden></canvas>
+        <div class="cam-overlay" id="camOverlay"><div class="oval"></div></div>
+        <button class="btn shutter" id="shutter" hidden>Capture</button>
+        <div class="cam-placeholder" id="camPh">
+          <img src="/demo/selfie.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- loading -->
+  <section id="step-loading" class="step">
+    <div class="loading">
+      <div class="scan"><img id="scanImg" alt="" /><div class="beam"></div></div>
+      <h2>Reading your skin…</h2>
+      <ul class="load-list">
+        <li id="l1">Uploading securely</li>
+        <li id="l2">AI Skin Analysis · 10 concerns</li>
+        <li id="l3">AI Facial Color Tones · skin, eyes, hair</li>
+        <li id="l4">Building your routine & shade match</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- STEP 2: report -->
+  <section id="step-report" class="step">
+    <div class="report-grid">
+      <div class="photo-card">
+        <div class="photo-wrap">
+          <img id="photo" alt="Your selfie" />
+          <img id="mask" alt="Concern map" class="mask" />
+        </div>
+        <p class="photo-cap" id="photoCap">Tap a concern to see where the AI found it.</p>
+      </div>
+      <div class="summary-card">
+        <div class="score-row">
+          <div class="ring" id="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" id="ringFg"/></svg><div class="ring-num"><b id="overall">–</b><span>skin score</span></div></div>
+          <div class="facts">
+            <div class="fact"><span>Skin age</span><b id="skinAge">–</b></div>
+            <div class="fact"><span>Undertone</span><b id="undertone">–</b></div>
+            <div class="fact"><span>Depth</span><b id="depth">–</b></div>
+            <div class="fact chips" id="toneChips"></div>
+          </div>
+        </div>
+        <h3>Your skin, concern by concern</h3>
+        <div id="concerns" class="concerns"></div>
+      </div>
+    </div>
+
+    <h2 class="sec">Your routine <small>picked for your weakest scores</small></h2>
+    <div id="routine" class="cards"></div>
+    <button class="btn primary wide" id="addRoutine">Add full routine to cart</button>
+
+    <h2 class="sec">Your shade match <small>from your measured skin tone</small></h2>
+    <div class="shade-grid">
+      <div class="shade-card" id="shadeCard"></div>
+      <div class="tryon-card">
+        <div class="ba" id="ba">
+          <img id="baBefore" alt="Before" />
+          <div class="ba-after" id="baAfterWrap"><img id="baAfter" alt="After" /></div>
+          <input type="range" id="baRange" min="0" max="100" value="50" aria-label="Before/after" />
+          <span class="ba-l">Before</span><span class="ba-r">Try-on</span>
+          <div class="ba-loading" id="baLoading" hidden>Rendering with YouCam Makeup VTO…</div>
+        </div>
+        <p class="fine" id="tryNote">Pick a shade to try it on your own face.</p>
+      </div>
+    </div>
+    <h3 class="sub">Lip colours for your <span id="utLabel"></span> undertone</h3>
+    <div id="lips" class="swatches"></div>
+
+    <div class="again"><button class="btn ghost" id="againBtn">↺ Analyse another selfie</button></div>
+  </section>
+</main>
+
+<!-- cart drawer -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head"><h3>Your cart</h3><button class="x" id="closeCart">✕</button></div>
+  <div id="cartItems" class="cart-items"></div>
+  <div class="cart-foot">
+    <div class="line"><span>Subtotal</span><b id="subtotal">$0.00</b></div>
+    <div class="line muted"><span>Bundle saving (3+ items, 10%)</span><b id="saving">–$0.00</b></div>
+    <div class="line total"><span>Total</span><b id="total">$0.00</b></div>
+    <button class="btn primary wide" id="checkout">Checkout</button>
+    <p class="fine">Demo store: no payment is taken.</p>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<div class="toast" id="toast"></div>
+
+<footer class="foot">Built with the YouCam API (AI Skin Analysis, AI Facial Color Tones Analyzer, AI Makeup Virtual Try-On). Not medical advice.</footer>
+<script src="/app.js"></script>
+</body>
+</html>
