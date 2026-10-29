@@ -61,6 +61,9 @@ async function runTask(feature, payload, { timeoutMs = 90_000, intervalMs = 2500
 function friendlyEngineError(code, msg) {
   const map = {
     error_no_face: 'No face found. Try a well-lit, front-facing selfie.',
+    error_src_face_too_small: 'Move closer: your face should fill most of the photo width.',
+    error_src_face_out_of_bound: 'Keep your whole face inside the photo.',
+    error_lighting_dark: 'The photo is too dark. Try brighter, even light.',
     error_pose: 'Please face the camera straight on and try again.',
     error_face_parsing: 'Could not read the face clearly. Try better lighting.',
     exceed_max_filesize: 'That photo is too large. Try a smaller one.',
